@@ -1,6 +1,7 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
 import { Task } from './task.model';
 import { TasksService } from './tasks.service';
+import { CreateTaskDto } from './dto/create-task.dto';
 
 /*
     Tells NestJS which route should be handled by this controller.
@@ -26,9 +27,15 @@ export class TasksController {
     return this.taskService.getAllTasks();
   }
 
+  // path param
+  @Get('/:id')
+  getTaskById(@Param('id') id: string): Task {
+    return this.taskService.getTaskById(id);
+  }
+
   /*
   Two ways to extract information from request body
-    1. With @Body decorator for overall request body. 
+    1. Using @Body decorator to get entire request body. 
        So when an HTTP request comes in, NestJS will make the request body 
        available to use on the declared parameter. 
        e.g. createTask(@Body() body) {...}
@@ -39,10 +46,13 @@ export class TasksController {
        e.g. createTask(@Body('title') title: string, @Body('description') description: string ) {..}
   */
   @Post()
-  createTask(
-    @Body('title') title: string,
-    @Body('description') description: string,
-  ): Task {
-    return this.taskService.createTask(title, description);
+  createTask(@Body() createTaskDto: CreateTaskDto): Task {
+    return this.taskService.createTask(createTaskDto);
+  }
+
+  // path param
+  @Delete('/:id')
+  deleteTaskById(@Param('id') id: string): void {
+    this.taskService.deleteTaskById(id);
   }
 }

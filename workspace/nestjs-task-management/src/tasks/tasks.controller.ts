@@ -1,4 +1,4 @@
-import { Controller, Get } from '@nestjs/common';
+import { Body, Controller, Get, Post } from '@nestjs/common';
 import { Task } from './task.model';
 import { TasksService } from './tasks.service';
 
@@ -24,5 +24,25 @@ export class TasksController {
   @Get()
   getAllTasks(): Task[] {
     return this.taskService.getAllTasks();
+  }
+
+  /*
+  Two ways to extract information from request body
+    1. With @Body decorator for overall request body. 
+       So when an HTTP request comes in, NestJS will make the request body 
+       available to use on the declared parameter. 
+       e.g. createTask(@Body() body) {...}
+
+    2. Using @Body decorator with specific parameters
+       So when an HTTP request comes in, NestJS will bind the mentioned parameter from request body 
+       to the declared parameter. 
+       e.g. createTask(@Body('title') title: string, @Body('description') description: string ) {..}
+  */
+  @Post()
+  createTask(
+    @Body('title') title: string,
+    @Body('description') description: string,
+  ): Task {
+    return this.taskService.createTask(title, description);
   }
 }

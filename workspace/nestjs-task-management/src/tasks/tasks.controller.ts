@@ -6,10 +6,12 @@ import {
   Param,
   Patch,
   Post,
+  Query,
 } from '@nestjs/common';
 import { Task, TaskStatus } from './task.model';
 import { TasksService } from './tasks.service';
 import { CreateTaskDto } from './dto/create-task.dto';
+import { GetTasksFilterDTO } from './dto/get-tasks-filter.dto';
 
 /*
     Tells NestJS which route should be handled by this controller.
@@ -31,8 +33,13 @@ export class TasksController {
   constructor(private taskService: TasksService) {}
 
   @Get()
-  getAllTasks(): Task[] {
-    return this.taskService.getAllTasks();
+  getTasks(@Query() filterDTO: GetTasksFilterDTO): Task[] {
+    console.log(filterDTO);
+    if (Object.keys(filterDTO).length) {
+      return this.taskService.getTasksWithFilters(filterDTO);
+    } else {
+      return this.taskService.getAllTasks();
+    }
   }
 
   // path param

@@ -7,6 +7,8 @@ import {
   Patch,
   Post,
   Query,
+  UsePipes,
+  ValidationPipe,
 } from '@nestjs/common';
 import { Task, TaskStatus } from './task.model';
 import { TasksService } from './tasks.service';
@@ -59,8 +61,15 @@ export class TasksController {
        So when an HTTP request comes in, NestJS will bind the mentioned parameter from request body 
        to the declared parameter. 
        e.g. createTask(@Body('title') title: string, @Body('description') description: string ) {..}
+  
+  Using pipes -
+    NestJS validation pipe is smart enough. 
+    It's going to take the entire request body which is using a DTO 
+    and validate the data against that DTO using the class-validator decorators 
+    that we specified in the DTO
   */
   @Post()
+  @UsePipes(ValidationPipe)
   createTask(@Body() createTaskDto: CreateTaskDto): Task {
     return this.taskService.createTask(createTaskDto);
   }

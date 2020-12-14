@@ -1,4 +1,5 @@
 import { EntityRepository, Repository } from 'typeorm';
+import * as bcrypt from 'bcrypt';
 import { User } from './user.entity';
 import { AuthCredentialsDto } from './dto/auth-credentials.dto';
 import {
@@ -12,9 +13,16 @@ export class UserRepository extends Repository<User> {
   // returning Promise<void> - void because we are not returning anything. Pomise because this is async function
   async signUp(authCredentialsDto: AuthCredentialsDto): Promise<void> {
     const { username, password } = authCredentialsDto;
+
+    // generate salt - unique per user
+    const salt = await bcrypt.genSalt();
+    //console.log(salt);
+
     const user = new User();
     user.username = username;
-    user.password = password;
+    user.password = await this.hashPassword(password, salt);
+    user.salt = salt; // common practice to store salt as well
+    //console.log(user);
 
     try {
       await user.save();
@@ -26,5 +34,10 @@ export class UserRepository extends Repository<User> {
         throw new InternalServerErrorException();
       }
     }
+  }
+
+  // generate password hash using salt which is unique per user
+  private async hashPassword(password: string, salt: string): Promise<string> {
+    return bcrypt.hash(password, salt);
   }
 }

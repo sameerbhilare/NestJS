@@ -3,6 +3,7 @@ import { TasksController } from './tasks.controller';
 import { TasksService } from './tasks.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { TaskRepository } from './task.repository';
+import { AuthModule } from '../auth/auth.module';
 
 @Module({
   imports: [
@@ -13,6 +14,8 @@ import { TaskRepository } from './task.repository';
       include this TaskRepository instance injectable independency injection throughout this module.
     */
     TypeOrmModule.forFeature([TaskRepository]),
+    // anything exported from AuthModule is available in TaskModule now
+    AuthModule,
   ],
   controllers: [TasksController],
   providers: [TasksService],

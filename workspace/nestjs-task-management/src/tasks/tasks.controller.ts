@@ -8,6 +8,7 @@ import {
   Patch,
   Post,
   Query,
+  UseGuards,
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
@@ -17,6 +18,7 @@ import { CreateTaskDto } from './dto/create-task.dto';
 import { GetTasksFilterDTO } from './dto/get-tasks-filter.dto';
 import { TaskStatusValidationPipe } from './pipes/task-status-validation.pipe';
 import { Task } from './task.entity';
+import { AuthGuard } from '@nestjs/passport';
 
 /*
     Tells NestJS which route should be handled by this controller.
@@ -25,6 +27,7 @@ import { Task } from './task.entity';
     Controllers job is to accept request and return response. In beteen job is handled by the service.
 */
 @Controller('tasks')
+@UseGuards(AuthGuard()) // to guard entire controller, i.e. to allow only authorized access.
 export class TasksController {
   /*
     Injecting TaskService into this controller.

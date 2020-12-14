@@ -10,7 +10,7 @@ import {
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
-import { Task, TaskStatus } from './task.model';
+import { TaskStatus } from './task-status.enum';
 import { TasksService } from './tasks.service';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { GetTasksFilterDTO } from './dto/get-tasks-filter.dto';
@@ -35,57 +35,57 @@ export class TasksController {
   */
   constructor(private taskService: TasksService) {}
 
-  @Get()
-  getTasks(@Query(ValidationPipe) filterDTO: GetTasksFilterDTO): Task[] {
-    console.log(filterDTO);
-    if (Object.keys(filterDTO).length) {
-      return this.taskService.getTasksWithFilters(filterDTO);
-    } else {
-      return this.taskService.getAllTasks();
-    }
-  }
+  // @Get()
+  // getTasks(@Query(ValidationPipe) filterDTO: GetTasksFilterDTO): Task[] {
+  //   console.log(filterDTO);
+  //   if (Object.keys(filterDTO).length) {
+  //     return this.taskService.getTasksWithFilters(filterDTO);
+  //   } else {
+  //     return this.taskService.getAllTasks();
+  //   }
+  // }
 
-  // path param
-  @Get('/:id')
-  getTaskById(@Param('id') id: string): Task {
-    return this.taskService.getTaskById(id);
-  }
+  // // path param
+  // @Get('/:id')
+  // getTaskById(@Param('id') id: string): Task {
+  //   return this.taskService.getTaskById(id);
+  // }
 
-  /*
-  Two ways to extract information from request body
-    1. Using @Body decorator to get entire request body. 
-       So when an HTTP request comes in, NestJS will make the request body 
-       available to use on the declared parameter. 
-       e.g. createTask(@Body() body) {...}
+  // /*
+  // Two ways to extract information from request body
+  //   1. Using @Body decorator to get entire request body.
+  //      So when an HTTP request comes in, NestJS will make the request body
+  //      available to use on the declared parameter.
+  //      e.g. createTask(@Body() body) {...}
 
-    2. Using @Body decorator with specific parameters
-       So when an HTTP request comes in, NestJS will bind the mentioned parameter from request body 
-       to the declared parameter. 
-       e.g. createTask(@Body('title') title: string, @Body('description') description: string ) {..}
-  
-  Using pipes -
-    NestJS validation pipe is smart enough. 
-    It's going to take the entire request body which is using a DTO 
-    and validate the data against that DTO using the class-validator decorators 
-    that we specified in the DTO
-  */
-  @Post()
-  @UsePipes(ValidationPipe)
-  createTask(@Body() createTaskDto: CreateTaskDto): Task {
-    return this.taskService.createTask(createTaskDto);
-  }
+  //   2. Using @Body decorator with specific parameters
+  //      So when an HTTP request comes in, NestJS will bind the mentioned parameter from request body
+  //      to the declared parameter.
+  //      e.g. createTask(@Body('title') title: string, @Body('description') description: string ) {..}
 
-  // path param
-  @Delete('/:id')
-  deleteTaskById(@Param('id') id: string): void {
-    this.taskService.deleteTaskById(id);
-  }
+  // Using pipes -
+  //   NestJS validation pipe is smart enough.
+  //   It's going to take the entire request body which is using a DTO
+  //   and validate the data against that DTO using the class-validator decorators
+  //   that we specified in the DTO
+  // */
+  // @Post()
+  // @UsePipes(ValidationPipe)
+  // createTask(@Body() createTaskDto: CreateTaskDto): Task {
+  //   return this.taskService.createTask(createTaskDto);
+  // }
 
-  @Patch('/:id/status')
-  updateTaskStatus(
-    @Param('id') id: string,
-    @Body('status', TaskStatusValidationPipe) status: TaskStatus,
-  ): Task {
-    return this.taskService.updateTaskStatus(id, status);
-  }
+  // // path param
+  // @Delete('/:id')
+  // deleteTaskById(@Param('id') id: string): void {
+  //   this.taskService.deleteTaskById(id);
+  // }
+
+  // @Patch('/:id/status')
+  // updateTaskStatus(
+  //   @Param('id') id: string,
+  //   @Body('status', TaskStatusValidationPipe) status: TaskStatus,
+  // ): Task {
+  //   return this.taskService.updateTaskStatus(id, status);
+  // }
 }

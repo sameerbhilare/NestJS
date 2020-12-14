@@ -75,11 +75,13 @@ export class TasksService {
     }
   }
 
-  // updateTaskStatus(id: string, status: TaskStatus): Task {
-  //   const task = this.getTaskById(id);
-  //   if (task) {
-  //     task.status = status;
-  //   }
-  //   return task;
-  // }
+  /*
+    Update task in DB
+  */
+  async updateTaskStatus(id: number, status: TaskStatus): Promise<Task> {
+    const task = await this.getTaskById(id);
+    task.status = status;
+    await task.save();
+    return task;
+  }
 }

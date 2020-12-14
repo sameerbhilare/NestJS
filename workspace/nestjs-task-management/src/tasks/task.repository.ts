@@ -2,6 +2,7 @@ import { EntityRepository, Repository } from 'typeorm';
 import { TaskStatus } from './task-status.enum';
 import { Task } from './task.entity';
 import { CreateTaskDto } from './dto/create-task.dto';
+import { GetTasksFilterDTO } from './dto/get-tasks-filter.dto';
 
 /*
     This tells the TypeORM that this repository is a repository for Tasks.
@@ -27,5 +28,30 @@ export class TaskRepository extends Repository<Task> {
     await task.save();
 
     return task;
+  }
+
+  // get tasks
+  async getTasks(filterDTO: GetTasksFilterDTO): Promise<Task[]> {
+    const { status, search } = filterDTO;
+
+    // USING QUERY BUILDER
+    // the query builder is a mechanism that is useful for interacting with a database
+    // when our desired operations are a bit more complex than usual
+    const query = this.createQueryBuilder('task'); // providing alias for later use
+
+    // using addWhere() instead of just where().
+    // addWhere() will append where clauses. Just where() will overwrite existing where clauses.
+    if (status) {
+      query.andWhere('task.status = :dbStatus', { dbStatus: status });
+    }
+
+    if (search) {
+      query.andWhere(
+        '(task.title LIKE :dbSearch OR task.description LIKE :dbSearch)',
+        { dbSearch: `%${search}%` },
+      );
+    }
+
+    return await query.getMany();
   }
 }

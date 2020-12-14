@@ -37,15 +37,12 @@ export class TasksController {
   */
   constructor(private taskService: TasksService) {}
 
-  // @Get()
-  // getTasks(@Query(ValidationPipe) filterDTO: GetTasksFilterDTO): Task[] {
-  //   console.log(filterDTO);
-  //   if (Object.keys(filterDTO).length) {
-  //     return this.taskService.getTasksWithFilters(filterDTO);
-  //   } else {
-  //     return this.taskService.getAllTasks();
-  //   }
-  // }
+  @Get()
+  getTasks(
+    @Query(ValidationPipe) filterDTO: GetTasksFilterDTO,
+  ): Promise<Task[]> {
+    return this.taskService.getTasks(filterDTO);
+  }
 
   /*
     Get Task by Id.

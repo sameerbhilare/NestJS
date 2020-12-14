@@ -20,9 +20,9 @@ export class TasksService {
   ) {}
 
   // private tasks: Task[] = [];
-  // getAllTasks(): Task[] {
-  //   return this.tasks.slice(0); // returns copy of array starting from 0th position
-  // }
+  async getTasks(filterDTO: GetTasksFilterDTO): Promise<Task[]> {
+    return await this.taskRepository.getTasks(filterDTO);
+  }
   // getTasksWithFilters(filterDTO: GetTasksFilterDTO): Task[] {
   //   const { status, search } = filterDTO;
   //   let filteredTasks = this.getAllTasks();

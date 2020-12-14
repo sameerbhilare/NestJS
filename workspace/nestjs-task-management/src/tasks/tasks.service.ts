@@ -3,6 +3,9 @@ import { TaskStatus } from './task-status.enum';
 import { v4 as uuid } from 'uuid';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { GetTasksFilterDTO } from './dto/get-tasks-filter.dto';
+import { TaskRepository } from './task.repository';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Task } from './task.entity';
 
 /*
     We will use the task service to contain any business logic related to tasks for now. 
@@ -11,6 +14,11 @@ import { GetTasksFilterDTO } from './dto/get-tasks-filter.dto';
 */
 @Injectable()
 export class TasksService {
+  // inject TaskRepository instance
+  constructor(
+    @InjectRepository(TaskRepository) private taskRepository: TaskRepository,
+  ) {}
+
   // private tasks: Task[] = [];
   // getAllTasks(): Task[] {
   //   return this.tasks.slice(0); // returns copy of array starting from 0th position
@@ -28,18 +36,26 @@ export class TasksService {
   //   }
   //   return filteredTasks;
   // }
-  // getTaskById(id: string): Task {
-  //   const found = this.tasks.find((task) => task.id === id);
-  //   /*
-  //     NestJS provides us with a set of exceptions we can throw that represent different HTTP error codes.
-  //     Since this is not caught in service or in controller, it will be sent back to the client.
-  //     But NestJS behind the scenes will beautifully format it and then send it back to the client.
-  //   */
-  //   if (!found) {
-  //     throw new NotFoundException(`Task with ID ${id} not found!`);
-  //   }
-  //   return found;
-  // }
+
+  /*
+    Get Task by Id.
+    Async method always returns Promise.
+  */
+  async getTaskById(id: number): Promise<Task> {
+    const found = await this.taskRepository.findOne(id);
+
+    if (!found) {
+      /*
+      NestJS provides us with a set of exceptions we can throw that represent different HTTP error codes.
+      Since this is not caught in service or in controller, it will be sent back to the client.
+      But NestJS behind the scenes will beautifully format it and then send it back to the client.
+      */
+      throw new NotFoundException(`Task with ID ${id} not found!`);
+    }
+
+    return found;
+  }
+
   // createTask(createTaskDto: CreateTaskDto): Task {
   //   // DS6 destructuting
   //   /*

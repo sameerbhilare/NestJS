@@ -64,36 +64,17 @@ export class TasksService {
     return this.taskRepository.createTask(createTaskDto);
   }
 
-  // createTask(createTaskDto: CreateTaskDto): Task {
-  //   // DS6 destructuting
-  //   /*
-  //     If you have an object that contains certain key value pairs,
-  //     you can use this syntax to only extract the keys you care about
-  //     and they will be available within the current scope.
-  //   */
-  //   const { title, description } = createTaskDto;
-  //   // create task
-  //   const task: Task = {
-  //     id: uuid(),
-  //     title,
-  //     description,
-  //     status: TaskStatus.OPEN,
-  //   };
-  //   // push it to tasks array
-  //   this.tasks.push(task);
-  //   // good practice to retun the newly created object to frontend as part of CREATE request
-  //   return task;
-  // }
-  // deleteTaskById(id: string): void {
-  //   const found = this.getTaskById(id);
-  //   // Approach 1: using findIndex and splice
-  //   /*
-  //   const index = this.tasks.findIndex((task) => task.id === found.id);
-  //   this.tasks.splice(index, 1);
-  //   */
-  //   // Approach 2: using filter
-  //   this.tasks = this.tasks.filter((task) => task.id !== found.id);
-  // }
+  /*
+    Delete a task by Id
+  */
+  async deleteTaskById(id: number): Promise<void> {
+    const result = await this.taskRepository.delete(id);
+    //console.log(result);
+    if (result.affected === 0) {
+      throw new NotFoundException(`Task with ID ${id} not found!`);
+    }
+  }
+
   // updateTaskStatus(id: string, status: TaskStatus): Task {
   //   const task = this.getTaskById(id);
   //   if (task) {

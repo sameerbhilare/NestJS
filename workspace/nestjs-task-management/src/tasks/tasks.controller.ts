@@ -81,11 +81,15 @@ export class TasksController {
     return this.taskService.createTask(createTaskDto);
   }
 
-  // // path param
-  // @Delete('/:id')
-  // deleteTaskById(@Param('id') id: string): void {
-  //   this.taskService.deleteTaskById(id);
-  // }
+  /*
+    Delete Task by Id.
+    Using path param.
+    Using ParseIntPipe to parse string to number.
+  */
+  @Delete('/:id')
+  deleteTaskById(@Param('id', ParseIntPipe) id: number): Promise<void> {
+    return this.taskService.deleteTaskById(id);
+  }
 
   // @Patch('/:id/status')
   // updateTaskStatus(

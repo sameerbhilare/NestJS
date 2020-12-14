@@ -5,6 +5,7 @@ import { UserRepository } from './user.repository';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
+import { JwtStrategy } from './jwt.strategy';
 
 @Module({
   imports: [
@@ -29,6 +30,10 @@ import { PassportModule } from '@nestjs/passport';
     TypeOrmModule.forFeature([UserRepository]),
   ],
   controllers: [AuthController],
-  providers: [AuthService],
+  providers: [AuthService, JwtStrategy],
+
+  // exporting JwtStrategy and PassportModule so that it can be used in other modules
+  // which need this JWT guarding for certain operations or protected resources
+  exports: [JwtStrategy, PassportModule],
 })
 export class AuthModule {}

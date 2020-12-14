@@ -47,7 +47,9 @@ export class TaskRepository extends Repository<Task> {
 
     if (search) {
       query.andWhere(
+        // wrap in brackets ( & ) since it's an OR condition
         '(task.title LIKE :dbSearch OR task.description LIKE :dbSearch)',
+        // as per TypeORM documentation wrapping value in % signs for partial match just like in Oracle.
         { dbSearch: `%${search}%` },
       );
     }

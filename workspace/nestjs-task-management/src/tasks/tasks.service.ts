@@ -56,6 +56,31 @@ export class TasksService {
     return found;
   }
 
+  /*
+    Creating Task in DB
+  */
+  async createTask(createTaskDto: CreateTaskDto): Promise<Task> {
+    // 1) WITHOUT USING REPOSITORY
+    // DS6 destructuting
+    /*
+      If you have an object that contains certain key value pairs,
+      you can use this syntax to only extract the keys you care about
+      and they will be available within the current scope.
+    */
+    const { title, description } = createTaskDto;
+    // creating the task
+    const task = new Task();
+    task.title = title;
+    task.description = description;
+    task.status = TaskStatus.OPEN;
+    // saving the entity into database
+    await task.save();
+
+    return task;
+
+    // 2) WITH USIGN REPOSITORY
+  }
+
   // createTask(createTaskDto: CreateTaskDto): Task {
   //   // DS6 destructuting
   //   /*

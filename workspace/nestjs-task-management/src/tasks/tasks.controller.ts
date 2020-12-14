@@ -57,29 +57,29 @@ export class TasksController {
     return this.taskService.getTaskById(id);
   }
 
-  // /*
-  // Two ways to extract information from request body
-  //   1. Using @Body decorator to get entire request body.
-  //      So when an HTTP request comes in, NestJS will make the request body
-  //      available to use on the declared parameter.
-  //      e.g. createTask(@Body() body) {...}
+  /*
+  Two ways to extract information from request body
+    1. Using @Body decorator to get entire request body.
+       So when an HTTP request comes in, NestJS will make the request body
+       available to use on the declared parameter.
+       e.g. createTask(@Body() body) {...}
 
-  //   2. Using @Body decorator with specific parameters
-  //      So when an HTTP request comes in, NestJS will bind the mentioned parameter from request body
-  //      to the declared parameter.
-  //      e.g. createTask(@Body('title') title: string, @Body('description') description: string ) {..}
+    2. Using @Body decorator with specific parameters
+       So when an HTTP request comes in, NestJS will bind the mentioned parameter from request body
+       to the declared parameter.
+       e.g. createTask(@Body('title') title: string, @Body('description') description: string ) {..}
 
-  // Using pipes -
-  //   NestJS validation pipe is smart enough.
-  //   It's going to take the entire request body which is using a DTO
-  //   and validate the data against that DTO using the class-validator decorators
-  //   that we specified in the DTO
-  // */
-  // @Post()
-  // @UsePipes(ValidationPipe)
-  // createTask(@Body() createTaskDto: CreateTaskDto): Task {
-  //   return this.taskService.createTask(createTaskDto);
-  // }
+  Using pipes -
+    NestJS validation pipe is smart enough.
+    It's going to take the entire request body which is using a DTO
+    and validate the data against that DTO using the class-validator decorators
+    that we specified in the DTO
+  */
+  @Post()
+  @UsePipes(ValidationPipe)
+  createTask(@Body() createTaskDto: CreateTaskDto): Promise<Task> {
+    return this.taskService.createTask(createTaskDto);
+  }
 
   // // path param
   // @Delete('/:id')

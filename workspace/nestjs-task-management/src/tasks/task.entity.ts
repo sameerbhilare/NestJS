@@ -29,4 +29,9 @@ export class Task extends BaseEntity {
   // only one side of the relationship can be eager. Since user.tasks has eager: true, here we use eager: false
   @ManyToOne((type) => User, (user) => user.tasks, { eager: false })
   user: User;
+
+  // bcz of above M-1 relationship, TypeORM creates 'userId' column for us in Task table.
+  // Hence we need to provide this mapping
+  @Column()
+  userId: number;
 }

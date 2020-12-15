@@ -4,12 +4,16 @@ import { Task } from './task.entity';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { GetTasksFilterDTO } from './dto/get-tasks-filter.dto';
 import { User } from 'src/auth/user.entity';
+import { InternalServerErrorException, Logger } from '@nestjs/common';
 
 /*
     This tells the TypeORM that this repository is a repository for Tasks.
 */
 @EntityRepository(Task)
 export class TaskRepository extends Repository<Task> {
+  // logger
+  private logger = new Logger('TaskRepository');
+
   // Create Task in DB
   async createTask(createTaskDto: CreateTaskDto, user: User): Promise<Task> {
     // DS6 destructuring
@@ -27,7 +31,18 @@ export class TaskRepository extends Repository<Task> {
     task.user = user;
 
     // saving the entity into database
-    await task.save();
+    try {
+      await task.save();
+    } catch (error) {
+      // printing error stacktrace in case of errors by passing second arg to .error() as error.stack
+      this.logger.error(
+        `Failed to create a task for user ${
+          user.username
+        }. Data: ${JSON.stringify(createTaskDto)}`,
+        error.stack, // stack trace
+      );
+      throw new InternalServerErrorException();
+    }
 
     // removes the user property from task object to avoid sending entire user object to frontend
     // this doesn't delete from database
@@ -62,6 +77,17 @@ export class TaskRepository extends Repository<Task> {
       );
     }
 
-    return await query.getMany();
+    try {
+      return await query.getMany();
+    } catch (error) {
+      // printing error stacktrace in case of errors by passing second arg to .error() as error.stack
+      this.logger.error(
+        `Failed to get tasks for user ${
+          user.username
+        }. Filters: ${JSON.stringify(filterDTO)}`,
+        error.stack,
+      );
+      throw new InternalServerErrorException();
+    }
   }
 }

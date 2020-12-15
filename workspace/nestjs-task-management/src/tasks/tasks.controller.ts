@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Get,
+  Logger,
   Param,
   ParseIntPipe,
   Patch,
@@ -31,6 +32,9 @@ import { User } from 'src/auth/user.entity';
 @Controller('tasks')
 @UseGuards(AuthGuard()) // to guard entire controller, i.e. to allow only authorized access.
 export class TasksController {
+  // private member
+  private logger = new Logger('TasksController');
+
   /*
     Injecting TaskService into this controller.
     NestJS is going to look for a TaskService object. 
@@ -47,6 +51,11 @@ export class TasksController {
     @Query(ValidationPipe) filterDTO: GetTasksFilterDTO,
     @GetUser() user: User,
   ): Promise<Task[]> {
+    this.logger.verbose(
+      `User ${user.username} retrieving tasks. Filters: ${JSON.stringify(
+        filterDTO,
+      )}`,
+    );
     return this.taskService.getTasks(filterDTO, user);
   }
 
@@ -87,6 +96,11 @@ export class TasksController {
     @Body() createTaskDto: CreateTaskDto,
     @GetUser() user: User,
   ): Promise<Task> {
+    this.logger.verbose(
+      `User ${user.username} creating new task. Data: ${JSON.stringify(
+        createTaskDto,
+      )}`,
+    );
     return this.taskService.createTask(createTaskDto, user);
   }
 

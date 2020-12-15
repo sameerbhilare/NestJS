@@ -6,6 +6,7 @@ import { GetTasksFilterDTO } from './dto/get-tasks-filter.dto';
 import { TaskRepository } from './task.repository';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Task } from './task.entity';
+import { User } from 'src/auth/user.entity';
 
 /*
     We will use the task service to contain any business logic related to tasks for now. 
@@ -59,9 +60,9 @@ export class TasksService {
   /*
     Creating Task in DB
   */
-  async createTask(createTaskDto: CreateTaskDto): Promise<Task> {
+  async createTask(createTaskDto: CreateTaskDto, user: User): Promise<Task> {
     // USING REPOSITORY
-    return this.taskRepository.createTask(createTaskDto);
+    return this.taskRepository.createTask(createTaskDto, user);
   }
 
   /*

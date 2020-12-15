@@ -3,6 +3,7 @@ import { TaskStatus } from './task-status.enum';
 import { Task } from './task.entity';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { GetTasksFilterDTO } from './dto/get-tasks-filter.dto';
+import { User } from 'src/auth/user.entity';
 
 /*
     This tells the TypeORM that this repository is a repository for Tasks.
@@ -10,7 +11,7 @@ import { GetTasksFilterDTO } from './dto/get-tasks-filter.dto';
 @EntityRepository(Task)
 export class TaskRepository extends Repository<Task> {
   // Create Task in DB
-  async createTask(createTaskDto: CreateTaskDto): Promise<Task> {
+  async createTask(createTaskDto: CreateTaskDto, user: User): Promise<Task> {
     // DS6 destructuring
     /*
         If you have an object that contains certain key value pairs,
@@ -23,9 +24,14 @@ export class TaskRepository extends Repository<Task> {
     task.title = title;
     task.description = description;
     task.status = TaskStatus.OPEN;
+    task.user = user;
 
     // saving the entity into database
     await task.save();
+
+    // removes the user property from task object to avoid sending entire user object to frontend
+    // this doesn't delete from database
+    delete task.user;
 
     return task;
   }

@@ -1,0 +1,6 @@
+# Here we can overwrite default values from default.yml and/or we can add extra values
+# then the 'config' package will merge both default and env specific values
+# for prod, we should not expose host, username, password, jwt secret in codebase.
+# rather those sensitive properties should be part of env variables.
+db:
+  synchronize: false

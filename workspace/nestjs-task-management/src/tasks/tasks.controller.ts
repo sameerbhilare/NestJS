@@ -96,8 +96,11 @@ export class TasksController {
     Using ParseIntPipe to parse string to number.
   */
   @Delete('/:id')
-  deleteTaskById(@Param('id', ParseIntPipe) id: number): Promise<void> {
-    return this.taskService.deleteTaskById(id);
+  deleteTaskById(
+    @Param('id', ParseIntPipe) id: number,
+    @GetUser() user: User,
+  ): Promise<void> {
+    return this.taskService.deleteTaskById(id, user);
   }
 
   /*

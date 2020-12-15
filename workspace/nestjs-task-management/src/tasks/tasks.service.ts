@@ -1,6 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { TaskStatus } from './task-status.enum';
-import { v4 as uuid } from 'uuid';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { GetTasksFilterDTO } from './dto/get-tasks-filter.dto';
 import { TaskRepository } from './task.repository';
@@ -42,8 +41,10 @@ export class TasksService {
     Get Task by Id.
     Async method always returns Promise.
   */
-  async getTaskById(id: number): Promise<Task> {
-    const found = await this.taskRepository.findOne(id);
+  async getTaskById(id: number, user: User): Promise<Task> {
+    const found = await this.taskRepository.findOne({
+      where: { id, userId: user.id },
+    });
 
     if (!found) {
       /*
@@ -79,8 +80,12 @@ export class TasksService {
   /*
     Update task in DB
   */
-  async updateTaskStatus(id: number, status: TaskStatus): Promise<Task> {
-    const task = await this.getTaskById(id);
+  async updateTaskStatus(
+    id: number,
+    status: TaskStatus,
+    user: User,
+  ): Promise<Task> {
+    const task = await this.getTaskById(id, user);
     task.status = status;
     await task.save();
     return task;

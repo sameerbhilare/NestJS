@@ -56,8 +56,11 @@ export class TasksController {
     Using ParseIntPipe to parse string to number.
   */
   @Get('/:id')
-  getTaskById(@Param('id', ParseIntPipe) id: number): Promise<Task> {
-    return this.taskService.getTaskById(id);
+  getTaskById(
+    @Param('id', ParseIntPipe) id: number,
+    @GetUser() user: User,
+  ): Promise<Task> {
+    return this.taskService.getTaskById(id, user);
   }
 
   /*
@@ -104,7 +107,8 @@ export class TasksController {
   updateTaskStatus(
     @Param('id', ParseIntPipe) id: number,
     @Body('status', TaskStatusValidationPipe) status: TaskStatus,
+    @GetUser() user: User,
   ): Promise<Task> {
-    return this.taskService.updateTaskStatus(id, status);
+    return this.taskService.updateTaskStatus(id, status, user);
   }
 }

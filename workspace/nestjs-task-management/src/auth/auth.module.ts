@@ -6,7 +6,9 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { JwtStrategy } from './jwt.strategy';
+import * as config from 'config';
 
+const jwtConfig = config.get('jwt');
 @Module({
   imports: [
     // configuring Passport to take JWT tokens and use that for authenticating the user
@@ -15,9 +17,10 @@ import { JwtStrategy } from './jwt.strategy';
 
     // configuring JWTModule
     JwtModule.register({
-      secret: 'TopSecretTaskManagement',
+      // for prod, we will be overwrite the secret using env variable JWT_SECRET.
+      secret: process.env.JWT_SECRET || jwtConfig.secret,
       signOptions: {
-        expiresIn: 3600, // 1 hr
+        expiresIn: jwtConfig.expiresIn, // 1 hr
       },
     }),
 

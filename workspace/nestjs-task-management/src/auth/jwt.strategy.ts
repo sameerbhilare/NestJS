@@ -5,6 +5,9 @@ import { Strategy, ExtractJwt } from 'passport-jwt';
 import { JwtPayload } from './jwt-payload.interface';
 import { User } from './user.entity';
 import { UserRepository } from './user.repository';
+import * as config from 'config';
+
+const jwtConfig = config.get('jwt');
 
 /*
   Setting up JWT passport strategy for authorization
@@ -20,7 +23,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       // define how to extract JWT. Here from Authorization Bearer Token
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       // to verify the signature of the token that is extracted from the request. (Internally done by Passport)
-      secretOrKey: 'TopSecretTaskManagement', // same secret as defined in auth.module.ts
+      secretOrKey: process.env.JWT_SECRET || jwtConfig.secret, // same secret as defined in auth.module.ts
     });
   }
 

@@ -6,16 +6,20 @@ import { JwtPayload } from './jwt-payload.interface';
 import { User } from './user.entity';
 import { UserRepository } from './user.repository';
 
-// Setting up JWT passport strategy for authorization
+/*
+  Setting up JWT passport strategy for authorization
+  Here Lot of things are done under the hood by @nestjs/passport using passport-jwt
+  Using @Injectable because we are going to expose it as a service,
+*/
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor(
     @InjectRepository(UserRepository) private userRepository: UserRepository,
   ) {
     super({
-      // define how to extract JWT
+      // define how to extract JWT. Here from Authorization Bearer Token
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-      // to verify the signature of the token that is extracted from the request.
+      // to verify the signature of the token that is extracted from the request. (Internally done by Passport)
       secretOrKey: 'TopSecretTaskManagement', // same secret as defined in auth.module.ts
     });
   }

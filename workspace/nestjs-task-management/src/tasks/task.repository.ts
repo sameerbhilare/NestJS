@@ -37,13 +37,15 @@ export class TaskRepository extends Repository<Task> {
   }
 
   // get tasks
-  async getTasks(filterDTO: GetTasksFilterDTO): Promise<Task[]> {
+  async getTasks(filterDTO: GetTasksFilterDTO, user: User): Promise<Task[]> {
     const { status, search } = filterDTO;
 
     // USING QUERY BUILDER
     // the query builder is a mechanism that is useful for interacting with a database
     // when our desired operations are a bit more complex than usual
     const query = this.createQueryBuilder('task'); // providing alias for later use
+
+    query.where('task.userId = :userId', { userId: user.id });
 
     // using addWhere() instead of just where().
     // addWhere() will append where clauses. Just where() will overwrite existing where clauses.
